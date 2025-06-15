@@ -1,0 +1,16 @@
+{
+  "name": "Heart-Attack-Predictor",
+  "image": "ubuntu:22.04",
+  "runArgs": [
+    "--privileged",
+    "--network=host"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "eamodio.gitlens"
+      ]
+    }
+  }
+}
