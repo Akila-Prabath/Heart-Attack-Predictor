@@ -1,7 +1,10 @@
 {
   "name": "Heart-Attack-Predictor",
   "image": "ubuntu:22.04",
-  "platform": "linux/amd64",
+  "runArgs": [
+    "--privileged",
+    "--network=host"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -11,3 +14,4 @@
     }
   }
 }
+
