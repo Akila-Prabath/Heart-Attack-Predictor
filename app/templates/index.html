@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Risk Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .heart-icon {
+            font-size: 1.2em;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.15); }
+            50% { transform: scale(1); }
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 1.6em;
+            font-weight: 600;
+            margin: 35px 0 25px 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .form-group:hover {
+            transform: translateY(-2px);
+        }
+
+        label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input, select {
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input:hover, select:hover {
+            border-color: #b8c5ff;
+        }
+
+        .tooltip {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        .btn-predict {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.4em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-predict:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-predict:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 40px;
+            padding: 50px;
+            border-radius: 20px;
+            animation: fadeInUp 0.6s;
+            text-align: center;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-low {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .result-moderate {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .result-high {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .result-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .probability {
+            font-size: 4.5em;
+            font-weight: 700;
+            margin: 30px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .result-message {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin-top: 20px;
+        }
+
+        .loader {
+            display: none;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span class="heart-icon">❤️</span>
+                Heart Disease Risk Predictor
+                <span class="heart-icon">❤️</span>
+            </h1>
+            <p>AI-Powered Health Risk Assessment Tool</p>
+        </div>
+
+        <form id="predictionForm">
+            <!-- Personal Information -->
+            <div class="section-title">👤 Personal Information</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" required min="1" max="120" value="60">
+                    <span class="tooltip">Enter your age in years</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Medical Conditions -->
+            <div class="section-title">🏥 Medical Conditions</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="hypertension">Hypertension</label>
+                    <select id="hypertension" name="hypertension" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="diabetes">Diabetes</label>
+                    <select id="diabetes" name="diabetes" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="obesity">Obesity</label>
+                    <select id="obesity" name="obesity" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="family_history">Family History</label>
+                    <select id="family_history" name="family_history" required>
+                        <option value="">Select...</option>
+                        <option value="Never">Never</option>
+                        <option value="Past">Past</option>
+                        <option value="Current">Current</option>
+                    </select>
+                    <span class="tooltip">Family history of heart disease</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="previous_heart_problems">Previous Heart Problems</label>
+                    <select id="previous_heart_problems" name="previous_heart_problems" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Lifestyle Factors -->
+            <div class="section-title">🏃 Lifestyle Factors</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="smoking_status">Smoking Status</label>
+                    <select id="smoking_status" name="smoking_status" required>
+                        <option value="">Select...</option>
+                        <option value="None">None</option>
+                        <option value="Low">Low</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="alcohol_consumption">Alcohol Consumption</label>
+                    <select id="alcohol_consumption" name="alcohol_consumption" required>
+                        <option value="">Select...</option>
+                        <option value="None">None</option>
+                        <option value="Low">Low</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="physical_activity">Physical Activity Level</label>
+                    <select id="physical_activity" name="physical_activity" required>
+                        <option value="">Select...</option>
+                        <option value="Low">Low</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dietary_habits">Dietary Habits</label>
+                    <select id="dietary_habits" name="dietary_habits" required>
+                        <option value="">Select...</option>
+                        <option value="Healthy">Healthy</option>
+                        <option value="Unhealthy">Unhealthy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sleep_hours_per_day">Sleep Quality</label>
+                    <select id="sleep_hours_per_day" name="sleep_hours_per_day" required>
+                        <option value="">Select...</option>
+                        <option value="Poor">Poor</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Good">Good</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="stress_level">Stress Level</label>
+                    <select id="stress_level" name="stress_level" required>
+                        <option value="">Select...</option>
+                        <option value="Low">Low</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Clinical Measurements -->
+            <div class="section-title">📊 Clinical Measurements</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="cholesterol">Cholesterol</label>
+                    <input type="number" id="cholesterol" name="cholesterol" required min="100" max="400" value="211">
+                    <span class="tooltip">Total cholesterol in mg/dL (e.g., 211)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="waist_circumference">Waist Circumference</label>
+                    <input type="number" id="waist_circumference" name="waist_circumference" required min="50" max="200" value="85">
+                    <span class="tooltip">Measurement in cm (e.g., 85)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="blood_pressure">Blood Pressure (Systolic)</label>
+                    <input type="number" id="blood_pressure" name="blood_pressure" required min="80" max="200" value="118">
+                    <span class="tooltip">Systolic BP in mmHg (e.g., 118)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="blood_glucose">Blood Glucose</label>
+                    <input type="number" id="blood_glucose" name="blood_glucose" required min="50" max="300" value="113">
+                    <span class="tooltip">Level in mg/dL (e.g., 113)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="fasting_blood_sugar">Fasting Blood Sugar</label>
+                    <input type="number" id="fasting_blood_sugar" name="fasting_blood_sugar" required min="50" max="300" value="132">
+                    <span class="tooltip">Level in mg/dL (e.g., 132)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="cholesterol_total">Total Cholesterol</label>
+                    <input type="number" id="cholesterol_total" name="cholesterol_total" required min="100" max="400" value="132">
+                    <span class="tooltip">Total cholesterol in mg/dL (e.g., 132)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="EKG_results">EKG Results</label>
+                    <select id="EKG_results" name="EKG_results" required>
+                        <option value="">Select...</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Abnormal">Abnormal</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Medications -->
+            <div class="section-title">💊 Current Medications</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="blood_pressure_medication">Blood Pressure Medication</label>
+                    <select id="blood_pressure_medication" name="blood_pressure_medication" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cholesterol_medication">Cholesterol Medication</label>
+                    <select id="cholesterol_medication" name="cholesterol_medication" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="triglyceride_medication">Triglyceride Medication</label>
+                    <select id="triglyceride_medication" name="triglyceride_medication" required>
+                        <option value="">Select...</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-predict">🔍 Predict Heart Disease Risk</button>
+        </form>
+
+        <div class="loader" id="loader"></div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-title" id="resultTitle"></div>
+            <div class="probability" id="probability"></div>
+            <div class="result-message" id="resultMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loader = document.getElementById('loader');
+            const resultContainer = document.getElementById('resultContainer');
+            const btn = document.querySelector('.btn-predict');
+            
+            loader.style.display = 'block';
+            resultContainer.style.display = 'none';
+            btn.disabled = true;
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                loader.style.display = 'none';
+                btn.disabled = false;
+                
+                if (result.error) {
+                    alert('Error: ' + result.error);
+                    return;
+                }
+                
+                displayResult(result);
+                
+            } catch (error) {
+                loader.style.display = 'none';
+                btn.disabled = false;
+                alert('Error making prediction: ' + error.message);
+            }
+        });
+        
+        function displayResult(result) {
+            const container = document.getElementById('resultContainer');
+            const title = document.getElementById('resultTitle');
+            const probability = document.getElementById('probability');
+            const message = document.getElementById('resultMessage');
+            
+            container.className = 'result-container';
+            
+            if (result.risk_level === 'Low') {
+                container.classList.add('result-low');
+                title.textContent = '✓ Low Risk Detected';
+                message.textContent = 'Great news! You show a low risk for heart disease. Continue maintaining healthy lifestyle habits and regular medical check-ups.';
+            } else if (result.risk_level === 'Moderate') {
+                container.classList.add('result-moderate');
+                title.textContent = '⚠️ Moderate Risk Detected';
+                message.textContent = 'You show moderate risk indicators. Consultation with a cardiologist is recommended. Consider lifestyle modifications and regular monitoring.';
+            } else {
+                container.classList.add('result-high');
+                title.textContent = '🚨 High Risk Detected';
+                message.textContent = 'You show high risk for heart disease. Immediate medical consultation is strongly recommended. Please seek professional medical attention.';
+            }
+            
+            probability.textContent = result.probability.toFixed(1) + '%';
+            container.style.display = 'block';
+            
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
