@@ -1,0 +1,2 @@
+Model,Best_Params,Accuracy,ROC_AUC
+Decision Tree,"{'classifier__criterion': 'entropy', 'classifier__max_depth': 10, 'classifier__min_samples_leaf': 1, 'classifier__min_samples_split': 5}",0.7289634050077358,0.8061973912108702
