@@ -17,10 +17,17 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
+			background-image: url("../static/heart.jpg");
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			display: flex;
+			align-items: center;
+			justify-content: center;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 25px;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
             max-width: 1200px;
@@ -47,7 +54,7 @@
         }
 
         .header h1 {
-            color: #667eea;
+			color: #FF4D00; 
             font-size: 2.8em;
             margin-bottom: 15px;
             display: flex;
@@ -79,18 +86,18 @@
         }
 
         .header p {
-            color: #666;
+			color: #FF4D00; 
             font-size: 1.1em;
             margin-top: 10px;
         }
 
         .section-title {
-            color: #667eea;
-            font-size: 1.6em;
+            color: #FF4D00; 
+			font-size: 1.6em;
             font-weight: 600;
             margin: 35px 0 25px 0;
             padding-bottom: 12px;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid #FF4D00;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -114,8 +121,8 @@
         }
 
         label {
-            color: #333;
-            font-weight: 600;
+            color: white;
+            font-weight: 900;
             margin-bottom: 10px;
             font-size: 1em;
             display: flex;
@@ -129,10 +136,11 @@
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 1em;
+			color: black;
             transition: all 0.3s;
             background: white;
         }
-
+		
         input:focus,
         select:focus {
             outline: none;
@@ -141,11 +149,27 @@
             transform: translateY(-2px);
         }
 
-        input:hover,
-        select:hover {
-            border-color: #b8c5ff;
-        }
+        .form-group:hover label {
+		color: red;
+		font-size: 1.05em;
+		}
 
+		.form-group:hover input,
+		.form-group:hover select {
+			border-color: red;
+			color: black; 
+			font-size: 1.1em;
+			font-weight:bold;			
+			transform: scale(1.02);
+		}
+		
+		input:not(:placeholder-shown),
+		input:valid,
+		select:valid {
+			color: black;
+			font-weight:bold;
+		}
+		
         .tooltip {
             font-size: 0.85em;
             color: #999;
@@ -156,7 +180,7 @@
         .btn-predict {
             width: 100%;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #FF8C00 0%, #8B0000 100%);
             color: white;
             border: none;
             border-radius: 15px;
