@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,10 +17,17 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
+			background-image: url("../static/heart.jpg");
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			display: flex;
+			align-items: center;
+			justify-content: center;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 25px;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
             max-width: 1200px;
@@ -33,6 +41,7 @@
                 opacity: 0;
                 transform: translateY(-40px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -45,7 +54,7 @@
         }
 
         .header h1 {
-            color: #667eea;
+			color: #FF4D00; 
             font-size: 2.8em;
             margin-bottom: 15px;
             display: flex;
@@ -61,24 +70,34 @@
         }
 
         @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.15); }
-            50% { transform: scale(1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.15);
+            }
+
+            50% {
+                transform: scale(1);
+            }
         }
 
         .header p {
-            color: #666;
+			color: #FF4D00; 
             font-size: 1.1em;
             margin-top: 10px;
         }
 
         .section-title {
-            color: #667eea;
-            font-size: 1.6em;
+            color: #FF4D00; 
+			font-size: 1.6em;
             font-weight: 600;
             margin: 35px 0 25px 0;
             padding-bottom: 12px;
-            border-bottom: 3px solid #667eea;
+            border-bottom: 3px solid #FF4D00;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -102,8 +121,8 @@
         }
 
         label {
-            color: #333;
-            font-weight: 600;
+            color: white;
+            font-weight: 900;
             margin-bottom: 10px;
             font-size: 1em;
             display: flex;
@@ -111,26 +130,46 @@
             gap: 8px;
         }
 
-        input, select {
+        input,
+        select {
             padding: 16px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 1em;
+			color: black;
             transition: all 0.3s;
             background: white;
         }
-
-        input:focus, select:focus {
+		
+        input:focus,
+        select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             transform: translateY(-2px);
         }
 
-        input:hover, select:hover {
-            border-color: #b8c5ff;
-        }
+        .form-group:hover label {
+		color: red;
+		font-size: 1.05em;
+		}
 
+		.form-group:hover input,
+		.form-group:hover select {
+			border-color: red;
+			color: black; 
+			font-size: 1.1em;
+			font-weight:bold;			
+			transform: scale(1.02);
+		}
+		
+		input:not(:placeholder-shown),
+		input:valid,
+		select:valid {
+			color: black;
+			font-weight:bold;
+		}
+		
         .tooltip {
             font-size: 0.85em;
             color: #999;
@@ -141,7 +180,7 @@
         .btn-predict {
             width: 100%;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #FF8C00 0%, #8B0000 100%);
             color: white;
             border: none;
             border-radius: 15px;
@@ -184,6 +223,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -215,7 +255,7 @@
             font-size: 4.5em;
             font-weight: 700;
             margin: 30px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .result-message {
@@ -236,19 +276,24 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 30px 20px;
             }
-            
+
             .header h1 {
                 font-size: 2em;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -259,6 +304,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -363,6 +409,7 @@
                         <option value="Low">Low</option>
                         <option value="Moderate">Moderate</option>
                         <option value="High">High</option>
+                        <option value="Unknown">Unknown</option>
                     </select>
                 </div>
 
@@ -417,32 +464,64 @@
 
                 <div class="form-group">
                     <label for="waist_circumference">Waist Circumference</label>
-                    <input type="number" id="waist_circumference" name="waist_circumference" required min="50" max="200" value="85">
+                    <input type="number" id="waist_circumference" name="waist_circumference" required min="50" max="200"
+                        value="85">
                     <span class="tooltip">Measurement in cm (e.g., 85)</span>
                 </div>
 
                 <div class="form-group">
                     <label for="blood_pressure">Blood Pressure (Systolic)</label>
-                    <input type="number" id="blood_pressure" name="blood_pressure" required min="80" max="200" value="118">
+                    <input type="number" id="blood_pressure" name="blood_pressure" required min="80" max="200"
+                        value="118">
                     <span class="tooltip">Systolic BP in mmHg (e.g., 118)</span>
                 </div>
 
                 <div class="form-group">
+                    <label for="diastolic_bp">Diastolic BP</label>
+                    <input type="number" id="diastolic_bp" name="diastolic_bp" required min="40" max="130" value="80">
+                    <span class="tooltip">Diastolic BP in mmHg (e.g., 80)</span>
+                </div>
+
+                <div class="form-group">
                     <label for="blood_glucose">Blood Glucose</label>
-                    <input type="number" id="blood_glucose" name="blood_glucose" required min="50" max="300" value="113">
+                    <input type="number" id="blood_glucose" name="blood_glucose" required min="50" max="300"
+                        value="113">
                     <span class="tooltip">Level in mg/dL (e.g., 113)</span>
                 </div>
 
                 <div class="form-group">
                     <label for="fasting_blood_sugar">Fasting Blood Sugar</label>
-                    <input type="number" id="fasting_blood_sugar" name="fasting_blood_sugar" required min="50" max="300" value="132">
+                    <input type="number" id="fasting_blood_sugar" name="fasting_blood_sugar" required min="50" max="300"
+                        value="132">
                     <span class="tooltip">Level in mg/dL (e.g., 132)</span>
                 </div>
 
                 <div class="form-group">
                     <label for="cholesterol_total">Total Cholesterol</label>
-                    <input type="number" id="cholesterol_total" name="cholesterol_total" required min="100" max="400" value="132">
+                    <input type="number" id="cholesterol_total" name="cholesterol_total" required min="100" max="400"
+                        value="132">
                     <span class="tooltip">Total cholesterol in mg/dL (e.g., 132)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="cholesterol_hdl">Cholesterol HDL</label>
+                    <input type="number" id="cholesterol_hdl" name="cholesterol_hdl" required min="20" max="100"
+                        value="50">
+                    <span class="tooltip">Good cholesterol (HDL) in mg/dL (e.g., 50)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="cholesterol_ldl">Cholesterol LDL</label>
+                    <input type="number" id="cholesterol_ldl" name="cholesterol_ldl" required min="50" max="250"
+                        value="120">
+                    <span class="tooltip">Bad cholesterol (LDL) in mg/dL (e.g., 120)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="triglycerides">Triglycerides</label>
+                    <input type="number" id="triglycerides" name="triglycerides" required min="50" max="500"
+                        value="150">
+                    <span class="tooltip">Triglyceride level in mg/dL (e.g., 150)</span>
                 </div>
 
                 <div class="form-group">
@@ -501,18 +580,18 @@
     <script>
         document.getElementById('predictionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const loader = document.getElementById('loader');
             const resultContainer = document.getElementById('resultContainer');
             const btn = document.querySelector('.btn-predict');
-            
+
             loader.style.display = 'block';
             resultContainer.style.display = 'none';
             btn.disabled = true;
-            
+
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
-            
+
             try {
                 const response = await fetch('/predict', {
                     method: 'POST',
@@ -521,34 +600,34 @@
                     },
                     body: JSON.stringify(data)
                 });
-                
+
                 const result = await response.json();
-                
+
                 loader.style.display = 'none';
                 btn.disabled = false;
-                
+
                 if (result.error) {
                     alert('Error: ' + result.error);
                     return;
                 }
-                
+
                 displayResult(result);
-                
+
             } catch (error) {
                 loader.style.display = 'none';
                 btn.disabled = false;
                 alert('Error making prediction: ' + error.message);
             }
         });
-        
+
         function displayResult(result) {
             const container = document.getElementById('resultContainer');
             const title = document.getElementById('resultTitle');
             const probability = document.getElementById('probability');
             const message = document.getElementById('resultMessage');
-            
+
             container.className = 'result-container';
-            
+
             if (result.risk_level === 'Low') {
                 container.classList.add('result-low');
                 title.textContent = '✓ Low Risk Detected';
@@ -562,10 +641,10 @@
                 title.textContent = '🚨 High Risk Detected';
                 message.textContent = 'You show high risk for heart disease. Immediate medical consultation is strongly recommended. Please seek professional medical attention.';
             }
-            
+
             probability.textContent = result.probability.toFixed(1) + '%';
             container.style.display = 'block';
-            
+
             container.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
